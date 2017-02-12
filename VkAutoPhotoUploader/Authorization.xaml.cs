@@ -7,18 +7,18 @@ namespace VkAutoPhotoUploader
 {
     public partial class Authorization : Window
     {
-        private MainWindow mWindow;
-        
+        private readonly MainWindow _window;
+        private readonly string _appId = XmlRepository.GetSettings().AppId;
 
         public Authorization(MainWindow window)
         {
             InitializeComponent();
-            mWindow = window;
+            _window = window;
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            webBrowser.Navigate("https://oauth.vk.com/authorize?client_id=" + AppId + "&scope=397316&redirect_uri=https://oauth.vk.com/blank.html&display=popup&v=5.26&response_type=token");
+            webBrowser.Navigate("https://oauth.vk.com/authorize?client_id=" + _appId + "&scope=397316&redirect_uri=https://oauth.vk.com/blank.html&display=popup&v=5.26&response_type=token");
         }
 
         private void webBrowser_LoadCompleted(object sender, NavigationEventArgs e)
@@ -35,7 +35,7 @@ namespace VkAutoPhotoUploader
                     Settings.Default.token = l.Split('&')[0].Split('=')[1];
                     Settings.Default.timeOut = DateTime.Now.AddHours(24);
                     Settings.Default.Save();
-                    mWindow.AddLog("Authorization success!");
+                    _window.AddLog("Authorization success!");
                     this.Close();
                 }
             }

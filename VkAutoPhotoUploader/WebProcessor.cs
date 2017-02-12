@@ -1,9 +1,9 @@
 ﻿using System;
 using System.IO;
 using System.Net;
-using System.Xml.Linq;
-using System.Xml.Serialization;
-
+using System.Text;
+using Newtonsoft.Json;
+using VkAutoPhotoUploader.Models;
 using VkAutoPhotoUploader.Properties;
 
 
@@ -13,52 +13,37 @@ namespace VkAutoPhotoUploader
     {
         public static T Reguest<T>(string uri)
         {
-            var request = WebRequest.Create($"https://api.vk.com/method/{uri}&access_token={Settings.Default.token}") as HttpWebRequest;
-            var response = request.GetResponse() as HttpWebResponse;
-            var doc = XDocument.Load(response.GetResponseStream());
-            if (doc.Root.Name == "error")
-                throw new VkResponseExeption((int)doc.Root.Element("error_code"), doc.Root.Element("error_msg").Value);
+            var response = SendRequest($"https://api.vk.com/method/{uri}&access_token={Settings.Default.token}");
+            string responseText = String.Empty;
+            var encoding = ASCIIEncoding.ASCII;
+            using (var reader = new StreamReader(response.GetResponseStream(), encoding))
+                responseText = reader.ReadToEnd();
 
-            Stream str = new MemoryStream();
-            doc.Save(str);
-            str.Position = 0;
-
-            XmlSerializer xs = new XmlSerializer(typeof(T));
-            return (T)xs.Deserialize(str);
+            return JsonConvert.DeserializeObject<T>(responseText);
         }
 
-        public static byte[] GetPhoto()
+        public static byte[] GetPhoto(string url)
         {
-            HttpWebRequest request = WebRequest.Create("http://hozpartner.com.ua/sites/default/files/products/93969_0.jpg") as HttpWebRequest;
-            HttpWebResponse response = request.GetResponse() as HttpWebResponse;
+            var response = SendRequest(url);
             return ReadFully(response.GetResponseStream());
         }
 
-        public static void PostForm(string postUrl, byte[] formData)
+        public static UploadPhotoModel SendPhotos(string url, byte[] file)
         {
-            string formDataBoundary = String.Format("----------{0:N}", Guid.NewGuid());
-            string contentType = "multipart/form-data; boundary=" + formDataBoundary;
+            var response = FormUpload.MultipartFormDataPost(url, file);
 
-            HttpWebRequest request = WebRequest.Create(postUrl) as HttpWebRequest;
+            string responseText = String.Empty;
+            var encoding = ASCIIEncoding.ASCII;
+            using (var reader = new StreamReader(response.GetResponseStream(), encoding))
+                responseText = reader.ReadToEnd();
 
-            if (request == null)
-                throw new NullReferenceException("request is not a http request");
+            return JsonConvert.DeserializeObject<UploadPhotoModel>(responseText);
+        }
 
-            request.Method = "POST";
-            request.ContentType = contentType;
-            //request.UserAgent = userAgent;
-            request.CookieContainer = new CookieContainer();
-            request.ContentLength = formData.Length;
-
-            // Send the form data to the request.
-            using (Stream requestStream = request.GetRequestStream())
-            {
-                requestStream.Write(formData, 0, formData.Length);
-                requestStream.Close();
-            }
-
-            var response = request.GetResponse() as HttpWebResponse;
-            var doc = new StreamReader(response.GetResponseStream()).ReadToEnd();
+        private static HttpWebResponse SendRequest(string url)
+        {
+            var request = WebRequest.Create(url) as HttpWebRequest;
+            return request.GetResponse() as HttpWebResponse;
         }
 
         private static byte[] ReadFully(Stream input)
@@ -73,11 +58,6 @@ namespace VkAutoPhotoUploader
                 }
                 return ms.ToArray();
             }
-        }
-
-        private static string BuildUrl(string url)
-        {
-            return "" + Settings.Default.token;
         }
     }
 }

@@ -1,17 +1,9 @@
-﻿using System.Xml.Serialization;
-
-namespace VkAutoPhotoUploader.Models
+﻿namespace VkAutoPhotoUploader.Models
 {
-    [XmlRoot(ElementName = "response")]
     public class UploadServerModel
     {
-        [XmlElement("album_id")]
-        public int AlbumId { get; set; }
-
-        [XmlElement("user_id")]
-        public int UserId { get; set; }
-
-        [XmlElement("upload_url")]
-        public string UploadUrl { get; set; }
+        public int album_id { get; set; }
+        public int user_id { get; set; }
+        public string upload_url { get; set; }
     }
 }

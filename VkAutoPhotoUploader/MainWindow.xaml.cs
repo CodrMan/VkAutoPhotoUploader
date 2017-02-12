@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Windows;
+using VkAutoPhotoUploader.Models;
 using VkAutoPhotoUploader.Properties;
 
 namespace VkAutoPhotoUploader
@@ -17,16 +20,31 @@ namespace VkAutoPhotoUploader
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            if (Settings.Default.auth || Settings.Default.timeOut < DateTime.Now)
-            {
-                new Authorization(this).Show();
-                AddLog("Start authorization!");
-            }
+            //if (Settings.Default.auth || Settings.Default.timeOut < DateTime.Now)
+            //{
+            //    new Authorization(this).Show();
+            //    AddLog("Start authorization!");
+            //}
         }
 
         private void startUploadbtn_Click(object sender, RoutedEventArgs e)
         {
             
+        }
+
+        private void SaveProductsToFile(IEnumerable<ProductInfo> products)
+        {
+            //using (TextWriter tw = new StreamWriter("SavedUrls.txt"))
+            //{
+            //    foreach (String s in urls)
+            //        tw.WriteLine(s);
+            //}
+        }
+
+        private IEnumerable<string> ReadUrlsFromFile()
+        {
+            var logFile = File.ReadAllLines("SavedUrls.txt");
+            return new List<string>(logFile);
         }
 
         private void CreateSettings()
