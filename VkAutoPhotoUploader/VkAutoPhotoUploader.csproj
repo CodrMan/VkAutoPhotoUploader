@@ -79,16 +79,18 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="FormUpload.cs" />
-    <Compile Include="Models\PhotoUploaderResultModel.cs" />
+    <Compile Include="Models\CreateAlbumModel.cs" />
+    <Compile Include="Models\SavePhotoResultModel.cs" />
     <Compile Include="Models\ProductInfo.cs" />
     <Compile Include="Models\Products.cs" />
     <Compile Include="Models\AppSettings.cs" />
     <Compile Include="Models\UploadPhotoModel.cs" />
     <Compile Include="Models\UploadServerModel.cs" />
+    <Compile Include="Repositories\SettingRepository.cs" />
     <Compile Include="VkResponseExeption.cs" />
     <Compile Include="WebParser.cs" />
     <Compile Include="WebProcessor.cs" />
-    <Compile Include="XmlRepository.cs" />
+    <Compile Include="Repositories\ProductRepository.cs" />
     <Page Include="Authorization.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -127,6 +129,9 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <Content Include="App_Data\AppSettings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -150,11 +155,6 @@
       <ProductName>.NET Framework 3.5 SP1</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="App_Data\AppSettings.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

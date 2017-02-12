@@ -11,9 +11,11 @@ namespace VkAutoPhotoUploader
 {
     static class WebProcessor
     {
-        public static T Reguest<T>(string uri)
+        private static readonly string DefaultPhotoUrl = "https://vk.com/images/camera_400.png";
+
+        public static T Reguest<T>(string httpParams)
         {
-            var response = SendRequest($"https://api.vk.com/method/{uri}&access_token={Settings.Default.token}");
+            var response = SendRequest($"https://api.vk.com/method/{httpParams}&access_token={Settings.Default.token}");
             string responseText = String.Empty;
             var encoding = ASCIIEncoding.ASCII;
             using (var reader = new StreamReader(response.GetResponseStream(), encoding))
@@ -24,7 +26,19 @@ namespace VkAutoPhotoUploader
 
         public static byte[] GetPhoto(string url)
         {
-            var response = SendRequest(url);
+            var request = WebRequest.Create(url) as HttpWebRequest;
+            HttpWebResponse response;
+
+            try
+            {
+                response = request.GetResponse() as HttpWebResponse;
+            }
+            catch (WebException ex)
+            {
+                request = WebRequest.Create(DefaultPhotoUrl) as HttpWebRequest;
+                response = request.GetResponse() as HttpWebResponse;
+            }
+
             return ReadFully(response.GetResponseStream());
         }
 

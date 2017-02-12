@@ -1,14 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
+using System.Linq;
+using System.Threading;
 using System.Windows;
 using VkAutoPhotoUploader.Models;
 using VkAutoPhotoUploader.Properties;
+using VkAutoPhotoUploader.Repositories;
 
 namespace VkAutoPhotoUploader
 {
     public partial class MainWindow : Window
     {
+        private readonly string GroupId = SettingRepository.GetSettings().GroupId;
+
         public MainWindow()
         {
             InitializeComponent();
@@ -20,31 +24,55 @@ namespace VkAutoPhotoUploader
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            //if (Settings.Default.auth || Settings.Default.timeOut < DateTime.Now)
-            //{
-            //    new Authorization(this).Show();
-            //    AddLog("Start authorization!");
-            //}
+            if (Settings.Default.auth || Settings.Default.timeOut < DateTime.Now)
+            {
+                new Authorization(this).Show();
+                AddLog("Start authorization!");
+            }
+        }
+
+        private void getProductsbtn_Click(object sender, RoutedEventArgs e)
+        {
+            //var products = WebParser.GetAllProducts();
+            //JsonRepository.SaveProducts(products);
         }
 
         private void startUploadbtn_Click(object sender, RoutedEventArgs e)
         {
-            
-        }
+            var products = ProductRepository.GetProducts();
+            var groupByCatalog = products.ProductInfos.GroupBy(x => x.CatalogName);
 
-        private void SaveProductsToFile(IEnumerable<ProductInfo> products)
-        {
-            //using (TextWriter tw = new StreamWriter("SavedUrls.txt"))
-            //{
-            //    foreach (String s in urls)
-            //        tw.WriteLine(s);
-            //}
-        }
+            foreach (IEnumerable<ProductInfo> items in groupByCatalog)
+            {
+                var createAlbumHttpParams = String.Format("photos.createAlbum?title={0}&group_id={1}&upload_by_admins_only=1", items.First().CatalogName, GroupId);
+                var albumId = WebProcessor.Reguest<CreateAlbumModel>(createAlbumHttpParams).response.aid;
+                
+                foreach (var item in items)
+                {
+                    try
+                    {
+                        var caption = String.Format("{0}\n\nЦена: {1}\n\n{2}", item.Name, item.Price, item.ProductLink);
 
-        private IEnumerable<string> ReadUrlsFromFile()
-        {
-            var logFile = File.ReadAllLines("SavedUrls.txt");
-            return new List<string>(logFile);
+                        var uploadServerHttpParams = String.Format("photos.getUploadServer?album_id={0}&group_id={1}", albumId, GroupId);
+                        var uploadServerModel = WebProcessor.Reguest<UploadServerModel>(uploadServerHttpParams);
+                        var uploadPhotoModel = WebProcessor.SendPhotos(uploadServerModel.response.upload_url, WebProcessor.GetPhoto(item.PhotoUrl));
+                        var savePhotoHttpParams = String.Format("photos.save?album_id={0}&group_id={1}&server={2}&photos_list={3}&hash={4}&caption={5}",
+                            albumId, GroupId, uploadPhotoModel.server, uploadPhotoModel.photos_list, uploadPhotoModel.hash, caption);
+                        var saveResult = WebProcessor.Reguest<SavePhotoResultModel>(savePhotoHttpParams);
+
+                        if(saveResult.response[0].id.Contains("photo"))
+                            item.IsSync = true;
+
+                        Thread.Sleep(700);
+                    }
+                    catch (Exception ex)
+                    {
+                        item.IsSync = false;
+                    }
+                }
+            }
+
+            ProductRepository.SaveProducts(products, true);
         }
 
         private void CreateSettings()
@@ -61,6 +89,6 @@ namespace VkAutoPhotoUploader
             this.txtLog.AppendText(DateTime.Now.ToString("dd.MM.yy  hh:mm:ss") + " : " + str + "\n");
             this.txtLog.Focus();
             this.txtLog.CaretIndex = this.txtLog.Text.Length;
-        }
+        } //TODO event
     }
 }

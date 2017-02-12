@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using HtmlAgilityPack;
 using VkAutoPhotoUploader.Models;
+using VkAutoPhotoUploader.Repositories;
 
 namespace VkAutoPhotoUploader
 {
@@ -11,13 +12,14 @@ namespace VkAutoPhotoUploader
         public static Products GetAllProducts()
         {
             var list = new List<ProductInfo>();
-            var domain = XmlRepository.GetSettings().SiteDomain;
+            var domain = SettingRepository.GetSettings().SiteDomain;
             var url = String.Format("{0}/katalog?&items_per_page=150&page=", domain);
+            var counter = 0;
 
             while (true)
-            { 
+            {
                 HtmlWeb web = new HtmlWeb();
-                HtmlDocument doc = web.Load(url);
+                HtmlDocument doc = web.Load(url + counter);
 
                 List<HtmlNode> toftitle = doc.DocumentNode.Descendants().Where
                     (x => (x.Name == "div" && x.Attributes["class"] != null &&
@@ -29,8 +31,14 @@ namespace VkAutoPhotoUploader
                 foreach (var htmlNode in toftitle)
                 {
                     var link = String.Format("{0}{1}", domain, htmlNode.ChildNodes[1].ChildNodes[3].Attributes[0].Value);
-                    list.Add(GetProductInfoByLink(link));
+                    if (!link.Contains("content"))
+                        link = String.Format("{0}{1}", domain, htmlNode.ChildNodes[1].ChildNodes[1].Attributes[0].Value);
+
+                    var productInfo = GetProductInfoByLink(link);
+                    list.Add(productInfo);
                 }
+
+                counter++;
             }
 
             return new Products() { ProductInfos = list };
@@ -40,8 +48,8 @@ namespace VkAutoPhotoUploader
         {
             HtmlWeb web = new HtmlWeb();
             HtmlDocument doc = web.Load(url);
-
-            HtmlNode nodeCatalog = doc.DocumentNode.Descendants().First(
+            
+            HtmlNode nodeCatalog = doc.DocumentNode.Descendants().FirstOrDefault(
                 x => (x.Name == "div" && x.Attributes["class"] != null &&
                         x.Attributes["class"].Value.Contains("field-name-field-prosduct-catalog")));
 
@@ -61,7 +69,7 @@ namespace VkAutoPhotoUploader
             return new ProductInfo()
             {
                 Name = nodeTitle.InnerText.Replace("\n", "").Trim(),
-                CatalogName = nodeCatalog.ChildNodes[nodeCatalog.ChildNodes.Count - 1].InnerText,
+                CatalogName = nodeCatalog != null ?  nodeCatalog.ChildNodes[1].InnerText : "Default",
                 Price = nodePrice.InnerText,
                 PhotoUrl = nodeImageUrl.ChildNodes[1].Attributes[0].Value,
                 ProductLink = url

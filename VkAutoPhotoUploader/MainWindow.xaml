@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="d" x:Class="VkAutoPhotoUploader.MainWindow"
         x:Name="mainWindow" Title="Vk Photo Uploader" Height="227.4" Width="350" Loaded="Window_Loaded" ResizeMode="NoResize" >
     <Grid x:Name="gridBot" Background="#333333" Margin="0,0,0,-1.8">
+        <Button x:Name="getProductsbtn" Content="Get Products" Background="Orange" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="72" Click="getProductsbtn_Click" RenderTransformOrigin="-3.859,0.406"/>
         <Button x:Name="startUploadbtn" Content="Start Upload" Background="Orange" HorizontalAlignment="Left" Margin="252,10,0,0" VerticalAlignment="Top" Width="72" Click="startUploadbtn_Click" RenderTransformOrigin="-3.859,0.406"/>
         <TextBox x:Name="txtLog" Background="#444" Foreground="Gray" HorizontalAlignment="Left" Height="141" TextWrapping="Wrap" VerticalAlignment="Top" Width="314" Margin="10,34,0,0" IsReadOnly="True" Text="            ---------- This is window for log! ----------"/>
     </Grid>

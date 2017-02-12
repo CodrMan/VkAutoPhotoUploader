@@ -13,7 +13,6 @@ namespace VkAutoPhotoUploader
         {
             string formDataBoundary = String.Format("----------{0:N}", Guid.NewGuid());
             string contentType = "multipart/form-data; boundary=" + formDataBoundary;
-
             byte[] formData = GetMultipartFormData(formDataBoundary, file);
 
             HttpWebRequest request = WebRequest.Create(postUrl) as HttpWebRequest;

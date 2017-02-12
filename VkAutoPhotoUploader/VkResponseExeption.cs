@@ -2,9 +2,6 @@
 
 namespace VkAutoPhotoUploader
 {
-    /// <summary>
-    /// Error Code
-    /// </summary>
     class VkResponseExeption : ApplicationException
     {
         public int error_code { get; set; }
