@@ -8,6 +8,8 @@ namespace VkAutoPhotoUploader.Repositories
     {
         private static readonly string ProductFilePath = Path.GetFullPath("App_Data/Products.json");
 
+        //private static readonly string ProductFilePath = Path.GetFullPath("App_Data/ProductsResult.json");
+
         public static void SaveProducts(Products item, bool isResult)
         {
             var filePath = isResult ? Path.GetFullPath("App_Data/ProductsResult.json") : ProductFilePath;

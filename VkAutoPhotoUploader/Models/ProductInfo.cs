@@ -9,7 +9,10 @@ namespace VkAutoPhotoUploader.Models
         public string Price { get; set; }
         public string CatalogName { get; set; }
         public string ProductLink { get; set; }
+        public int AlbumId { get; set; }
+        public string PhotoId { get; set; }
         public bool IsSync { get; set; }
+        public bool IsLoadPhoto { get; set; }
 
         public bool Equals(ProductInfo other)
         {

@@ -35,6 +35,8 @@ namespace VkAutoPhotoUploader
         {
             //var products = WebParser.GetAllProducts();
             //JsonRepository.SaveProducts(products);
+
+            var prod = ProductRepository.GetProducts().ProductInfos.Where(x => x.IsSync && !x.IsLoadPhoto).ToList();
         }
 
         private void startUploadbtn_Click(object sender, RoutedEventArgs e)
@@ -44,26 +46,41 @@ namespace VkAutoPhotoUploader
 
             foreach (IEnumerable<ProductInfo> items in groupByCatalog)
             {
+                if(items.First().CatalogName != "СТРОЙКА")
+                    continue;
+
                 var createAlbumHttpParams = String.Format("photos.createAlbum?title={0}&group_id={1}&upload_by_admins_only=1", items.First().CatalogName, GroupId);
                 var albumId = WebProcessor.Reguest<CreateAlbumModel>(createAlbumHttpParams).response.aid;
-                
+
+
                 foreach (var item in items)
                 {
+                    if(item.IsSync)
+                        continue;
+
                     try
                     {
+                        var isLoadPhoto = false;
+
                         var caption = String.Format("{0}\n\nЦена: {1}\n\n{2}", item.Name, item.Price, item.ProductLink);
 
                         var uploadServerHttpParams = String.Format("photos.getUploadServer?album_id={0}&group_id={1}", albumId, GroupId);
                         var uploadServerModel = WebProcessor.Reguest<UploadServerModel>(uploadServerHttpParams);
-                        var uploadPhotoModel = WebProcessor.SendPhotos(uploadServerModel.response.upload_url, WebProcessor.GetPhoto(item.PhotoUrl));
+                        var photoByte = WebProcessor.GetPhoto(item.PhotoUrl, ref isLoadPhoto);
+                        var uploadPhotoModel = WebProcessor.SendPhotos(uploadServerModel.response.upload_url, photoByte);
                         var savePhotoHttpParams = String.Format("photos.save?album_id={0}&group_id={1}&server={2}&photos_list={3}&hash={4}&caption={5}",
                             albumId, GroupId, uploadPhotoModel.server, uploadPhotoModel.photos_list, uploadPhotoModel.hash, caption);
                         var saveResult = WebProcessor.Reguest<SavePhotoResultModel>(savePhotoHttpParams);
 
-                        if(saveResult.response[0].id.Contains("photo"))
+                        if (saveResult.response[0].id.Contains("photo"))
+                        {
                             item.IsSync = true;
+                            item.AlbumId = albumId;
+                            item.PhotoId = saveResult.response[0].id;
+                            item.IsLoadPhoto = isLoadPhoto;
+                        }
 
-                        Thread.Sleep(700);
+                        Thread.Sleep(900);
                     }
                     catch (Exception ex)
                     {

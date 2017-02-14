@@ -24,7 +24,7 @@ namespace VkAutoPhotoUploader
             return JsonConvert.DeserializeObject<T>(responseText);
         }
 
-        public static byte[] GetPhoto(string url)
+        public static byte[] GetPhoto(string url, ref bool isLoadPhoto)
         {
             var request = WebRequest.Create(url) as HttpWebRequest;
             HttpWebResponse response;
@@ -32,11 +32,20 @@ namespace VkAutoPhotoUploader
             try
             {
                 response = request.GetResponse() as HttpWebResponse;
+                isLoadPhoto = true;
             }
             catch (WebException ex)
             {
-                request = WebRequest.Create(DefaultPhotoUrl) as HttpWebRequest;
-                response = request.GetResponse() as HttpWebResponse;
+                try
+                {
+                    response = request.GetResponse() as HttpWebResponse;
+                    isLoadPhoto = true;
+                }
+                catch (WebException ex1)
+                {
+                    request = WebRequest.Create(DefaultPhotoUrl) as HttpWebRequest;
+                    response = request.GetResponse() as HttpWebResponse;
+                }
             }
 
             return ReadFully(response.GetResponseStream());
