@@ -33,10 +33,8 @@ namespace VkAutoPhotoUploader
 
         private void getProductsbtn_Click(object sender, RoutedEventArgs e)
         {
-            //var products = WebParser.GetAllProducts();
-            //JsonRepository.SaveProducts(products);
-
-            var prod = ProductRepository.GetProducts().ProductInfos.Where(x => x.IsSync && !x.IsLoadPhoto).ToList();
+            var products = WebParser.GetAllProducts();
+            ProductRepository.SaveProducts(products);
         }
 
         private void startUploadbtn_Click(object sender, RoutedEventArgs e)
@@ -46,18 +44,11 @@ namespace VkAutoPhotoUploader
 
             foreach (IEnumerable<ProductInfo> items in groupByCatalog)
             {
-                if(items.First().CatalogName != "СТРОЙКА")
-                    continue;
-
                 var createAlbumHttpParams = String.Format("photos.createAlbum?title={0}&group_id={1}&upload_by_admins_only=1", items.First().CatalogName, GroupId);
                 var albumId = WebProcessor.Reguest<CreateAlbumModel>(createAlbumHttpParams).response.aid;
 
-
                 foreach (var item in items)
                 {
-                    if(item.IsSync)
-                        continue;
-
                     try
                     {
                         var isLoadPhoto = false;
@@ -80,7 +71,7 @@ namespace VkAutoPhotoUploader
                             item.IsLoadPhoto = isLoadPhoto;
                         }
 
-                        Thread.Sleep(900);
+                        Thread.Sleep(1000);
                     }
                     catch (Exception ex)
                     {
@@ -89,7 +80,7 @@ namespace VkAutoPhotoUploader
                 }
             }
 
-            ProductRepository.SaveProducts(products, true);
+            ProductRepository.SaveProducts(products);
         }
 
         private void CreateSettings()

@@ -36,16 +36,8 @@ namespace VkAutoPhotoUploader
             }
             catch (WebException ex)
             {
-                try
-                {
-                    response = request.GetResponse() as HttpWebResponse;
-                    isLoadPhoto = true;
-                }
-                catch (WebException ex1)
-                {
-                    request = WebRequest.Create(DefaultPhotoUrl) as HttpWebRequest;
-                    response = request.GetResponse() as HttpWebResponse;
-                }
+                request = WebRequest.Create(DefaultPhotoUrl) as HttpWebRequest;
+                response = request.GetResponse() as HttpWebResponse;
             }
 
             return ReadFully(response.GetResponseStream());
