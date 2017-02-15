@@ -2,6 +2,7 @@
 using System.IO;
 using System.Net;
 using System.Text;
+using System.Threading;
 using Newtonsoft.Json;
 using VkAutoPhotoUploader.Models;
 using VkAutoPhotoUploader.Properties;
@@ -18,7 +19,8 @@ namespace VkAutoPhotoUploader
             var response = SendRequest($"https://api.vk.com/method/{httpParams}&access_token={Settings.Default.token}");
             string responseText = String.Empty;
             var encoding = ASCIIEncoding.ASCII;
-            using (var reader = new StreamReader(response.GetResponseStream(), encoding))
+            var responseStream = response.GetResponseStream();
+            using (var reader = new StreamReader(responseStream, encoding))
                 responseText = reader.ReadToEnd();
 
             return JsonConvert.DeserializeObject<T>(responseText);
@@ -36,8 +38,18 @@ namespace VkAutoPhotoUploader
             }
             catch (WebException ex)
             {
-                request = WebRequest.Create(DefaultPhotoUrl) as HttpWebRequest;
-                response = request.GetResponse() as HttpWebResponse;
+                Thread.Sleep(1000);
+
+                try
+                {
+                    response = request.GetResponse() as HttpWebResponse;
+                    isLoadPhoto = true;
+                }
+                catch (WebException ex1)
+                {
+                    request = WebRequest.Create(DefaultPhotoUrl) as HttpWebRequest;
+                    response = request.GetResponse() as HttpWebResponse;
+                }
             }
 
             return ReadFully(response.GetResponseStream());

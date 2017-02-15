@@ -80,6 +80,7 @@
     </ApplicationDefinition>
     <Compile Include="FormUpload.cs" />
     <Compile Include="Models\CreateAlbumModel.cs" />
+    <Compile Include="Models\DeletePhotoResult.cs" />
     <Compile Include="Models\SavePhotoResultModel.cs" />
     <Compile Include="Models\ProductInfo.cs" />
     <Compile Include="Models\Products.cs" />
