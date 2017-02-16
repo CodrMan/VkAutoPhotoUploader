@@ -33,37 +33,35 @@ namespace VkAutoPhotoUploader
 
         private void getProductsbtn_Click(object sender, RoutedEventArgs e)
         {
-            //var products = WebParser.GetAllProducts();
-            //ProductRepository.SaveProducts(products);
-
-            var count = ProductRepository.GetProducts().ProductInfos.Where(x => x.PhotoId == null).ToList();
+            var products = WebParser.GetAllProducts();
+            ProductRepository.SaveProducts(products);
         }
 
         private void startUploadbtn_Click(object sender, RoutedEventArgs e)
         {
-            var products = ProductRepository.GetProducts();//.ProductInfos.Where(x => !x.IsLoadPhoto);
+            var products = ProductRepository.GetProducts();
             var groupByCatalog = products.ProductInfos.GroupBy(x => x.CatalogName);
 
             foreach (IEnumerable<ProductInfo> items in groupByCatalog)
             {
-                //var createAlbumHttpParams = String.Format("photos.createAlbum?title={0}&group_id={1}&upload_by_admins_only=1", items.First().CatalogName, GroupId);
-                //var albumId = WebProcessor.Reguest<CreateAlbumModel>(createAlbumHttpParams).response.aid;
+                var createAlbumHttpParams = String.Format("photos.createAlbum?title={0}&group_id={1}&upload_by_admins_only=1", items.First().CatalogName, GroupId);
+                var albumId = WebProcessor.Reguest<CreateAlbumModel>(createAlbumHttpParams).response.aid;
 
                 foreach (var item in items)
                 {
-                    if(item.IsLoadPhoto || item.PhotoId == null)
-                        continue;
+                    //if(item.IsLoadPhoto || item.PhotoId == null)
+                    //    continue;
 
-                    var albumId = item.AlbumId; 
+                    //var albumId = item.AlbumId; 
 
                     try
                     {
                         var isLoadPhoto = false;
 
-                        var isDeletePhoto = WebProcessor.Reguest<DeletePhotoResult>(String.Format("photos.delete?owner_id=-{0}&photo_id={1}", GroupId, item.PhotoId.Split('_')[1]));
+                        //var isDeletePhoto = WebProcessor.Reguest<DeletePhotoResult>(String.Format("photos.delete?owner_id=-{0}&photo_id={1}", GroupId, item.PhotoId.Split('_')[1]));
 
-                        if(isDeletePhoto == null || isDeletePhoto.response != 1)
-                            continue;
+                        //if(isDeletePhoto == null || isDeletePhoto.response != 1)
+                        //    continue;
 
                         var caption = String.Format("{0}\n\nЦена: {1}\n\n{2}", item.Name, item.Price, item.ProductLink);
                         var uploadServerHttpParams = String.Format("photos.getUploadServer?album_id={0}&group_id={1}", albumId, GroupId);

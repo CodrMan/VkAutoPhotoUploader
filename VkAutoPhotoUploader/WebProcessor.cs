@@ -1,8 +1,8 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Text;
-using System.Threading;
 using Newtonsoft.Json;
 using VkAutoPhotoUploader.Models;
 using VkAutoPhotoUploader.Properties;
@@ -23,35 +23,41 @@ namespace VkAutoPhotoUploader
             using (var reader = new StreamReader(responseStream, encoding))
                 responseText = reader.ReadToEnd();
 
+            if (responseText.Contains("error"))
+            {
+                var errorModel = JsonConvert.DeserializeObject<VkErrorModel>(responseText);
+                throw new VkResponseExeption(errorModel.error.error_code, errorModel.error.error_msg);
+            }
+
             return JsonConvert.DeserializeObject<T>(responseText);
         }
 
         public static byte[] GetPhoto(string url, ref bool isLoadPhoto)
         {
-            var request = WebRequest.Create(url) as HttpWebRequest;
+            HttpWebRequest request;
             HttpWebResponse response;
 
-            try
-            {
-                response = request.GetResponse() as HttpWebResponse;
-                isLoadPhoto = true;
-            }
-            catch (WebException ex)
-            {
-                Thread.Sleep(1000);
+            var newUrl = url.Contains("_") ? url.Split('_')[0] + ".jpg" : url;
 
+            for (int i = 0; i < 4; i++)
+            {
                 try
                 {
+                    request = WebRequest.Create(i == 3 ? newUrl : newUrl.Replace(".jpg", String.Format("_{0}.jpg", i))) as HttpWebRequest;
                     response = request.GetResponse() as HttpWebResponse;
                     isLoadPhoto = true;
+                    var rez = ReadFully(response.GetResponseStream());
+                    if(!rez.Any())
+                        throw new Exception();
+                    return rez;
                 }
-                catch (WebException ex1)
+                catch (Exception)
                 {
-                    request = WebRequest.Create(DefaultPhotoUrl) as HttpWebRequest;
-                    response = request.GetResponse() as HttpWebResponse;
                 }
             }
-
+   
+            request = WebRequest.Create(DefaultPhotoUrl) as HttpWebRequest;
+            response = request.GetResponse() as HttpWebResponse;
             return ReadFully(response.GetResponseStream());
         }
 

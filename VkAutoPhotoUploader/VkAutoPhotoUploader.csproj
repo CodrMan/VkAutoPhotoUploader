@@ -81,12 +81,15 @@
     <Compile Include="FormUpload.cs" />
     <Compile Include="Models\CreateAlbumModel.cs" />
     <Compile Include="Models\DeletePhotoResult.cs" />
+    <Compile Include="Models\PhotoGetByIdResultModel.cs" />
+    <Compile Include="Models\PhotoGetResultModel.cs" />
     <Compile Include="Models\SavePhotoResultModel.cs" />
     <Compile Include="Models\ProductInfo.cs" />
     <Compile Include="Models\Products.cs" />
     <Compile Include="Models\AppSettings.cs" />
     <Compile Include="Models\UploadPhotoModel.cs" />
     <Compile Include="Models\UploadServerModel.cs" />
+    <Compile Include="Models\VkErrorModel.cs" />
     <Compile Include="Repositories\SettingRepository.cs" />
     <Compile Include="VkResponseExeption.cs" />
     <Compile Include="WebParser.cs" />
