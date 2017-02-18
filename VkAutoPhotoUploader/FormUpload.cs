@@ -7,8 +7,6 @@ namespace VkAutoPhotoUploader
 {
     public static class FormUpload
     {
-        private static readonly Encoding encoding = Encoding.UTF8;
-
         public static HttpWebResponse MultipartFormDataPost(string postUrl, byte[] file)
         {
             string formDataBoundary = String.Format("----------{0:N}", Guid.NewGuid());
@@ -36,6 +34,7 @@ namespace VkAutoPhotoUploader
         
         private static byte[] GetMultipartFormData(string boundary, byte[] file)
         {
+            Encoding encoding = Encoding.UTF8;
             Stream formDataStream = new MemoryStream();
 
             string header = string.Format("--{0}\r\nContent-Disposition: form-data; name=\"file\"; filename=\"filename.jpg\";\r\nContent-Type: image/jpeg\r\n\r\n", boundary);

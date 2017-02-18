@@ -4,21 +4,22 @@ namespace VkAutoPhotoUploader
 {
     class VkResponseExeption : ApplicationException
     {
-        public int error_code { get; set; }
-        public string messageDetails { get; set; }
+        private readonly int _errorCode;
+        private readonly string _messageDetails;
 
         public VkResponseExeption(){}
+
         public VkResponseExeption(int error, string message)
         {
-            error_code = error;
-            messageDetails = message;
+            _errorCode = error;
+            _messageDetails = message;
         }
 
         public override string Message
         {
             get
             {
-                return string.Format("Error Code = {0}, Message = {1}", error_code, messageDetails);
+                return string.Format("Error Code = {0}, Message = {1}", _errorCode, _messageDetails);
             }
         }
     }

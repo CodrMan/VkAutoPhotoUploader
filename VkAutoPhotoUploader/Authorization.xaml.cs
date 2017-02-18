@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Navigation;
+
 using VkAutoPhotoUploader.Properties;
 using VkAutoPhotoUploader.Repositories;
+
 
 namespace VkAutoPhotoUploader
 {

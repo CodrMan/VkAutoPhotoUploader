@@ -84,7 +84,7 @@
     <Compile Include="Models\PhotoGetByIdResultModel.cs" />
     <Compile Include="Models\PhotoGetResultModel.cs" />
     <Compile Include="Models\SavePhotoResultModel.cs" />
-    <Compile Include="Models\ProductInfo.cs" />
+    <Compile Include="Models\Product.cs" />
     <Compile Include="Models\Products.cs" />
     <Compile Include="Models\AppSettings.cs" />
     <Compile Include="Models\UploadPhotoModel.cs" />

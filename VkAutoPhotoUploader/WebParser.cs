@@ -1,17 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Net;
 using HtmlAgilityPack;
+
 using VkAutoPhotoUploader.Models;
 using VkAutoPhotoUploader.Repositories;
+
 
 namespace VkAutoPhotoUploader
 {
     public static class WebParser
     {
+
+        private static readonly string DefaultPhotoUrl = SettingRepository.GetSettings().DefaultPhotoUrl;
+
         public static Products GetAllProducts()
         {
-            var list = new List<ProductInfo>();
+            var list = new List<Product>();
             var domain = SettingRepository.GetSettings().SiteDomain;
             var url = String.Format("{0}/katalog?&items_per_page=150&page=", domain);
             var counter = 0;
@@ -41,10 +48,10 @@ namespace VkAutoPhotoUploader
                 counter++;
             }
 
-            return new Products() { ProductInfos = list };
+            return new Products() { ProductList = list };
         }
 
-        private static ProductInfo GetProductInfoByLink(string url)
+        private static Product GetProductInfoByLink(string url)
         {
             HtmlWeb web = new HtmlWeb();
             HtmlDocument doc = web.Load(url);
@@ -66,14 +73,54 @@ namespace VkAutoPhotoUploader
                         x.Attributes["class"].Value.Contains("field-name-commerce-price")));
             
 
-            return new ProductInfo()
+            return new Product()
             {
                 Name = nodeTitle.InnerText.Replace("\n", "").Trim(),
                 CatalogName = nodeCatalog != null ?  nodeCatalog.ChildNodes[1].InnerText : "Default",
                 Price = nodePrice.InnerText,
-                PhotoUrl = nodeImageUrl.ChildNodes[1].Attributes[0].Value,
+                PhotoBytes = GetPhoto(nodeImageUrl.ChildNodes[1].Attributes[0].Value),
                 ProductLink = url
             };
+        }
+
+        private static byte[] GetPhoto(string url)
+        {
+            HttpWebRequest request;
+            HttpWebResponse response;
+
+            var newUrl = url.Contains("_") ? url.Split('_')[0] + ".jpg" : url;
+
+            for (int i = 0; i < 4; i++)
+            {
+                try
+                {
+                    request = WebRequest.Create(i == 3 ? newUrl : newUrl.Replace(".jpg", String.Format("_{0}.jpg", i))) as HttpWebRequest;
+                    response = request.GetResponse() as HttpWebResponse;
+                    var rez = ReadFully(response.GetResponseStream());
+                    if (!rez.Any())
+                        throw new Exception();
+                    return rez;
+                }
+                catch (Exception) { }
+            }
+
+            request = WebRequest.Create(DefaultPhotoUrl) as HttpWebRequest;
+            response = request.GetResponse() as HttpWebResponse;
+            return ReadFully(response.GetResponseStream());
+        }
+
+        private static byte[] ReadFully(Stream input)
+        {
+            byte[] buffer = new byte[16 * 1024];
+            using (MemoryStream ms = new MemoryStream())
+            {
+                int read;
+                while ((read = input.Read(buffer, 0, buffer.Length)) > 0)
+                {
+                    ms.Write(buffer, 0, read);
+                }
+                return ms.ToArray();
+            }
         }
     }
 }

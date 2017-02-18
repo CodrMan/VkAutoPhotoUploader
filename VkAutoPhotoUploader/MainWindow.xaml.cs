@@ -3,15 +3,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Windows;
+
 using VkAutoPhotoUploader.Models;
 using VkAutoPhotoUploader.Properties;
 using VkAutoPhotoUploader.Repositories;
+
 
 namespace VkAutoPhotoUploader
 {
     public partial class MainWindow : Window
     {
-        private readonly string GroupId = SettingRepository.GetSettings().GroupId;
+        private readonly string _groupId = SettingRepository.GetSettings().GroupId;
 
         public MainWindow()
         {
@@ -40,49 +42,35 @@ namespace VkAutoPhotoUploader
         private void startUploadbtn_Click(object sender, RoutedEventArgs e)
         {
             var products = ProductRepository.GetProducts();
-            var groupByCatalog = products.ProductInfos.GroupBy(x => x.CatalogName);
+            var groupByCatalog = products.ProductList.GroupBy(x => x.CatalogName);
 
-            foreach (IEnumerable<ProductInfo> items in groupByCatalog)
+            foreach (IEnumerable<Product> items in groupByCatalog)
             {
-                var createAlbumHttpParams = String.Format("photos.createAlbum?title={0}&group_id={1}&upload_by_admins_only=1", items.First().CatalogName, GroupId);
-                var albumId = WebProcessor.Reguest<CreateAlbumModel>(createAlbumHttpParams).response.aid;
+                var createAlbumHttpParams = String.Format("photos.createAlbum?title={0}&group_id={1}&upload_by_admins_only=1", items.First().CatalogName, _groupId);
+                var albumId = WebProcessor.VkReguest<CreateAlbumModel>(createAlbumHttpParams).response.aid;
 
                 foreach (var item in items)
                 {
-                    //if(item.IsLoadPhoto || item.PhotoId == null)
-                    //    continue;
-
-                    //var albumId = item.AlbumId; 
-
                     try
                     {
-                        var isLoadPhoto = false;
-
-                        //var isDeletePhoto = WebProcessor.Reguest<DeletePhotoResult>(String.Format("photos.delete?owner_id=-{0}&photo_id={1}", GroupId, item.PhotoId.Split('_')[1]));
-
-                        //if(isDeletePhoto == null || isDeletePhoto.response != 1)
-                        //    continue;
-
                         var caption = String.Format("{0}\n\nЦена: {1}\n\n{2}", item.Name, item.Price, item.ProductLink);
-                        var uploadServerHttpParams = String.Format("photos.getUploadServer?album_id={0}&group_id={1}", albumId, GroupId);
-                        var uploadServerModel = WebProcessor.Reguest<UploadServerModel>(uploadServerHttpParams);
-                        var photoByte = WebProcessor.GetPhoto(item.PhotoUrl, ref isLoadPhoto);
-                        var uploadPhotoModel = WebProcessor.SendPhotos(uploadServerModel.response.upload_url, photoByte);
+                        var uploadServerHttpParams = String.Format("photos.getUploadServer?album_id={0}&group_id={1}", albumId, _groupId);
+                        var uploadServerModel = WebProcessor.VkReguest<UploadServerModel>(uploadServerHttpParams);
+                        var uploadPhotoModel = WebProcessor.SendPhotos(uploadServerModel.response.upload_url, item.PhotoBytes);
                         var savePhotoHttpParams = String.Format("photos.save?album_id={0}&group_id={1}&server={2}&photos_list={3}&hash={4}&caption={5}",
-                            albumId, GroupId, uploadPhotoModel.server, uploadPhotoModel.photos_list, uploadPhotoModel.hash, caption);
-                        var saveResult = WebProcessor.Reguest<SavePhotoResultModel>(savePhotoHttpParams);
+                            albumId, _groupId, uploadPhotoModel.server, uploadPhotoModel.photos_list, uploadPhotoModel.hash, caption);
+                        var saveResult = WebProcessor.VkReguest<SavePhotoResultModel>(savePhotoHttpParams);
 
                         if (saveResult.response[0].id.Contains("photo"))
                         {
                             item.IsSync = true;
                             item.AlbumId = albumId;
                             item.PhotoId = saveResult.response[0].id;
-                            item.IsLoadPhoto = isLoadPhoto;
                         }
 
                         Thread.Sleep(1000);
                     }
-                    catch (Exception ex)
+                    catch (Exception)
                     {
                         item.IsSync = false;
                     }

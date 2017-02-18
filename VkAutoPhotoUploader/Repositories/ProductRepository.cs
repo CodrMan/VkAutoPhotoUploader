@@ -1,6 +1,8 @@
 ﻿using System.IO;
 using Newtonsoft.Json;
+
 using VkAutoPhotoUploader.Models;
+
 
 namespace VkAutoPhotoUploader.Repositories
 {

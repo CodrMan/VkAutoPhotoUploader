@@ -4,6 +4,6 @@ namespace VkAutoPhotoUploader.Models
 {
     public class Products
     {
-        public ICollection<ProductInfo> ProductInfos { get; set; } 
+        public ICollection<Product> ProductList { get; set; } 
     }
 }
