@@ -79,17 +79,17 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="FormUpload.cs" />
-    <Compile Include="Models\CreateAlbumModel.cs" />
+    <Compile Include="Models\CreateAlbumResult.cs" />
     <Compile Include="Models\DeletePhotoResult.cs" />
-    <Compile Include="Models\PhotoGetByIdResultModel.cs" />
-    <Compile Include="Models\PhotoGetResultModel.cs" />
-    <Compile Include="Models\SavePhotoResultModel.cs" />
-    <Compile Include="Models\Product.cs" />
-    <Compile Include="Models\Products.cs" />
-    <Compile Include="Models\AppSettings.cs" />
-    <Compile Include="Models\UploadPhotoModel.cs" />
-    <Compile Include="Models\UploadServerModel.cs" />
-    <Compile Include="Models\VkErrorModel.cs" />
+    <Compile Include="Models\PhotoGetByIdResult.cs" />
+    <Compile Include="Models\PhotosGetResult.cs" />
+    <Compile Include="Models\SavePhotoResult.cs" />
+    <Compile Include="Entities\Product.cs" />
+    <Compile Include="Entities\Products.cs" />
+    <Compile Include="Entities\AppSettings.cs" />
+    <Compile Include="Models\UploadPhotoResult.cs" />
+    <Compile Include="Models\UploadServerResult.cs" />
+    <Compile Include="Models\VkErrorResult.cs" />
     <Compile Include="Repositories\SettingRepository.cs" />
     <Compile Include="VkResponseExeption.cs" />
     <Compile Include="WebParser.cs" />
@@ -130,7 +130,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
+      <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <Content Include="App_Data\AppSettings.json">
@@ -160,6 +160,7 @@
       <Install>false</Install>
     </BootstrapperPackage>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

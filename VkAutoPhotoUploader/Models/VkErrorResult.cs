@@ -1,6 +1,6 @@
 ﻿namespace VkAutoPhotoUploader.Models
 {
-    public class VkErrorModel
+    public class VkErrorResult
     {
         public InnerModel error { get; set; }
 

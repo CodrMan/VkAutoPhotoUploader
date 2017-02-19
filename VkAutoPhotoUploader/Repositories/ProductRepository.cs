@@ -1,14 +1,14 @@
 ﻿using System.IO;
 using Newtonsoft.Json;
 
-using VkAutoPhotoUploader.Models;
+using VkAutoPhotoUploader.Entities;
 
 
 namespace VkAutoPhotoUploader.Repositories
 {
     public class ProductRepository
     {
-        private static readonly string ProductFilePath = Path.GetFullPath("App_Data/Products.json");
+        private static readonly string ProductFilePath = Path.GetFullPath(Properties.Resources.PathProductsFile);
 
         public static void SaveProducts(Products item)
         {

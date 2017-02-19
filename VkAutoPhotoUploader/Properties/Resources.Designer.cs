@@ -22,7 +22,7 @@ namespace VkAutoPhotoUploader.Properties {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class Resources {
+    public class Resources {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
@@ -36,7 +36,7 @@ namespace VkAutoPhotoUploader.Properties {
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Resources.ResourceManager ResourceManager {
+        public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
                     global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("VkAutoPhotoUploader.Properties.Resources", typeof(Resources).Assembly);
@@ -51,12 +51,102 @@ namespace VkAutoPhotoUploader.Properties {
         ///   resource lookups using this strongly typed resource class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Globalization.CultureInfo Culture {
+        public static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
             set {
                 resourceCulture = value;
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to https://api.vk.com/method/{0}&amp;access_token={1}.
+        /// </summary>
+        public static string ApiVkUrl {
+            get {
+                return ResourceManager.GetString("ApiVkUrl", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to photos.createAlbum?title={0}&amp;group_id={1}&amp;upload_by_admins_only=1.
+        /// </summary>
+        public static string CreateAlbumUrl {
+            get {
+                return ResourceManager.GetString("CreateAlbumUrl", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to photos.getUploadServer?album_id={0}&amp;group_id={1}.
+        /// </summary>
+        public static string GetUploadServerUrl {
+            get {
+                return ResourceManager.GetString("GetUploadServerUrl", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to https://oauth.vk.com/authorize?client_id={0}&amp;scope=397316&amp;redirect_uri=https://oauth.vk.com/blank.html&amp;display=popup&amp;v=5.26&amp;response_type=token.
+        /// </summary>
+        public static string OauthUrl {
+            get {
+                return ResourceManager.GetString("OauthUrl", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to App_Data/Products.json.
+        /// </summary>
+        public static string PathProductsFile {
+            get {
+                return ResourceManager.GetString("PathProductsFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to App_Data/AppSettings.json.
+        /// </summary>
+        public static string PathSettingsFile {
+            get {
+                return ResourceManager.GetString("PathSettingsFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0}\n\nЦена: {1}\n\n{2}.
+        /// </summary>
+        public static string PhotoDescription {
+            get {
+                return ResourceManager.GetString("PhotoDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to photos.save?album_id={0}&amp;group_id={1}&amp;server={2}&amp;photos_list={3}&amp;hash={4}&amp;caption={5}.
+        /// </summary>
+        public static string SavePhotoUrl {
+            get {
+                return ResourceManager.GetString("SavePhotoUrl", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0}/katalog?&amp;items_per_page=150&amp;page=.
+        /// </summary>
+        public static string SiteUrlForWebParser {
+            get {
+                return ResourceManager.GetString("SiteUrlForWebParser", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error Code = {0}, Message = {1}.
+        /// </summary>
+        public static string VkExceptionMessage {
+            get {
+                return ResourceManager.GetString("VkExceptionMessage", resourceCulture);
             }
         }
     }

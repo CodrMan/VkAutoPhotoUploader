@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace VkAutoPhotoUploader.Models
+namespace VkAutoPhotoUploader.Entities
 {
     public class Products
     {

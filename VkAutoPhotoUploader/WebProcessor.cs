@@ -14,15 +14,15 @@ namespace VkAutoPhotoUploader
     {
         public static T VkReguest<T>(string httpParams)
         {
-            var request = WebRequest.Create($"https://api.vk.com/method/{httpParams}&access_token={Settings.Default.token}") as HttpWebRequest;
+            var request = WebRequest.Create(String.Format(Resources.ApiVkUrl, httpParams, Settings.Default.token)) as HttpWebRequest;
             var response = request.GetResponse() as HttpWebResponse;
             return Reguest<T>(response);
         }
 
-        public static UploadPhotoModel SendPhotos(string url, byte[] file)
+        public static UploadPhotoResult SendPhotos(string url, byte[] file)
         {
             var response = FormUpload.MultipartFormDataPost(url, file);
-            return Reguest<UploadPhotoModel>(response);
+            return Reguest<UploadPhotoResult>(response);
         }
 
         private static T Reguest<T>(HttpWebResponse response)
@@ -33,7 +33,7 @@ namespace VkAutoPhotoUploader
 
             if (responseText.Contains("error"))
             {
-                var errorModel = JsonConvert.DeserializeObject<VkErrorModel>(responseText);
+                var errorModel = JsonConvert.DeserializeObject<VkErrorResult>(responseText);
                 throw new VkResponseExeption(errorModel.error.error_code, errorModel.error.error_msg);
             }
 

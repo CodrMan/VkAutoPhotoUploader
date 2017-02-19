@@ -5,7 +5,7 @@ using System.Linq;
 using System.Net;
 using HtmlAgilityPack;
 
-using VkAutoPhotoUploader.Models;
+using VkAutoPhotoUploader.Entities;
 using VkAutoPhotoUploader.Repositories;
 
 
@@ -20,7 +20,7 @@ namespace VkAutoPhotoUploader
         {
             var list = new List<Product>();
             var domain = SettingRepository.GetSettings().SiteDomain;
-            var url = String.Format("{0}/katalog?&items_per_page=150&page=", domain);
+            var url = String.Format(Properties.Resources.SiteUrlForWebParser, domain);
             var counter = 0;
 
             while (true)

@@ -1,6 +1,6 @@
 ﻿namespace VkAutoPhotoUploader.Models
 {
-    public class SavePhotoResultModel
+    public class SavePhotoResult
     {
         public InnerModel[] response { get; set; }
 

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Windows;
-
+using VkAutoPhotoUploader.Entities;
 using VkAutoPhotoUploader.Models;
 using VkAutoPhotoUploader.Properties;
 using VkAutoPhotoUploader.Repositories;
@@ -46,20 +46,19 @@ namespace VkAutoPhotoUploader
 
             foreach (IEnumerable<Product> items in groupByCatalog)
             {
-                var createAlbumHttpParams = String.Format("photos.createAlbum?title={0}&group_id={1}&upload_by_admins_only=1", items.First().CatalogName, _groupId);
-                var albumId = WebProcessor.VkReguest<CreateAlbumModel>(createAlbumHttpParams).response.aid;
+                var createAlbumHttpParams = String.Format(Properties.Resources.CreateAlbumUrl, items.First().CatalogName, _groupId);
+                var albumId = WebProcessor.VkReguest<CreateAlbumResult>(createAlbumHttpParams).response.aid;
 
                 foreach (var item in items)
                 {
                     try
                     {
-                        var caption = String.Format("{0}\n\nЦена: {1}\n\n{2}", item.Name, item.Price, item.ProductLink);
-                        var uploadServerHttpParams = String.Format("photos.getUploadServer?album_id={0}&group_id={1}", albumId, _groupId);
-                        var uploadServerModel = WebProcessor.VkReguest<UploadServerModel>(uploadServerHttpParams);
+                        var caption = String.Format(Properties.Resources.PhotoDescription, item.Name, item.Price, item.ProductLink);
+                        var uploadServerHttpParams = String.Format(Properties.Resources.GetUploadServerUrl, albumId, _groupId);
+                        var uploadServerModel = WebProcessor.VkReguest<UploadServerResult>(uploadServerHttpParams);
                         var uploadPhotoModel = WebProcessor.SendPhotos(uploadServerModel.response.upload_url, item.PhotoBytes);
-                        var savePhotoHttpParams = String.Format("photos.save?album_id={0}&group_id={1}&server={2}&photos_list={3}&hash={4}&caption={5}",
-                            albumId, _groupId, uploadPhotoModel.server, uploadPhotoModel.photos_list, uploadPhotoModel.hash, caption);
-                        var saveResult = WebProcessor.VkReguest<SavePhotoResultModel>(savePhotoHttpParams);
+                        var savePhotoHttpParams = String.Format(Properties.Resources.SavePhotoUrl, albumId, _groupId, uploadPhotoModel.server, uploadPhotoModel.photos_list, uploadPhotoModel.hash, caption);
+                        var saveResult = WebProcessor.VkReguest<SavePhotoResult>(savePhotoHttpParams);
 
                         if (saveResult.response[0].id.Contains("photo"))
                         {

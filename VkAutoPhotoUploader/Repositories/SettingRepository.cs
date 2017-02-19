@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using Newtonsoft.Json;
 
-using VkAutoPhotoUploader.Models;
+using VkAutoPhotoUploader.Entities;
 
 
 namespace VkAutoPhotoUploader.Repositories
@@ -15,7 +15,7 @@ namespace VkAutoPhotoUploader.Repositories
             if (_appSettings != null)
                 return _appSettings;
 
-            var fileName = Path.GetFullPath("App_Data/AppSettings.json");
+            var fileName = Path.GetFullPath(Properties.Resources.PathSettingsFile);
             _appSettings = JsonConvert.DeserializeObject<AppSettings>(File.ReadAllText(fileName));
 
             return _appSettings;

@@ -19,7 +19,7 @@ namespace VkAutoPhotoUploader
         {
             get
             {
-                return string.Format("Error Code = {0}, Message = {1}", _errorCode, _messageDetails);
+                return string.Format(Properties.Resources.VkExceptionMessage, _errorCode, _messageDetails);
             }
         }
     }

@@ -1,4 +1,4 @@
-﻿namespace VkAutoPhotoUploader.Models
+﻿namespace VkAutoPhotoUploader.Entities
 {
     public class AppSettings
     {

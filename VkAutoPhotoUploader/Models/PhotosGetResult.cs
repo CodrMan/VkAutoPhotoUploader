@@ -1,12 +1,13 @@
 ﻿namespace VkAutoPhotoUploader.Models
 {
-    public class CreateAlbumModel
+    public class PhotosGetResult
     {
         public InnerModel response { get; set; }
 
         public class InnerModel
         {
-            public int aid { get; set; }
+            public int count { get; set; }
+            public string[] items { get; set; }
         }
     }
 }

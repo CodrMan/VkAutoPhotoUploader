@@ -1,6 +1,6 @@
 ﻿namespace VkAutoPhotoUploader.Models
 {
-    public class UploadPhotoModel
+    public class UploadPhotoResult
     {
         public int server { get; set; }
         public string photos_list { get; set; }
