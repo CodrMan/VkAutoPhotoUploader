@@ -10,5 +10,10 @@
         public int AlbumId { get; set; }
         public bool IsSync { get; set; }
         public byte[] PhotoBytes { get; set; }
+
+        public void SavePhoto()
+        {
+            
+        }
     }
 }
