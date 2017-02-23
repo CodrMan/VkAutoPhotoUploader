@@ -1,4 +1,11 @@
-﻿namespace VkAutoPhotoUploader.Entities
+﻿using System;
+using System.Linq;
+
+using VkAutoPhotoUploader.Models;
+using VkAutoPhotoUploader.Repositories;
+
+
+namespace VkAutoPhotoUploader.Entities
 {
     public class Product
     {
@@ -14,6 +21,26 @@
         public void SavePhoto()
         {
             
+        }
+
+        public bool IsContainsInGroup()
+        {
+            var isContains = false;
+            if (PhotoId == null)
+                return false;
+            try
+            {
+                var photoParam = String.Format("-{0}_{1}", SettingRepository.GetSettings().GroupId, PhotoId.Split('_')[1]);
+                var result = WebProcessor.VkReguest<PhotoGetByIdResult>(String.Format("photos.getById?photos={0}", photoParam));
+                if (result != null && result.response.Any())
+                    isContains = true;
+            }
+            catch (Exception)
+            {
+                isContains = false;
+            }
+            
+            return isContains;
         }
     }
 }
