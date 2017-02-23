@@ -123,6 +123,9 @@
   <data name="CreateAlbumUrl" xml:space="preserve">
     <value>photos.createAlbum?title={0}&amp;group_id={1}&amp;upload_by_admins_only=1</value>
   </data>
+  <data name="GetPhotoByIdUrl" xml:space="preserve">
+    <value>photos.getById?photos={0}</value>
+  </data>
   <data name="GetUploadServerUrl" xml:space="preserve">
     <value>photos.getUploadServer?album_id={0}&amp;group_id={1}</value>
   </data>
@@ -137,6 +140,9 @@
   </data>
   <data name="PhotoDescription" xml:space="preserve">
     <value>{0}\n\nЦена: {1}\n\n{2}</value>
+  </data>
+  <data name="PhotoIdFormat" xml:space="preserve">
+    <value>-{0}_{1}</value>
   </data>
   <data name="SavePhotoUrl" xml:space="preserve">
     <value>photos.save?album_id={0}&amp;group_id={1}&amp;server={2}&amp;photos_list={3}&amp;hash={4}&amp;caption={5}</value>

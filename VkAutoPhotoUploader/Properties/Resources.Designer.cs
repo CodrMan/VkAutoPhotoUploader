@@ -79,6 +79,15 @@ namespace VkAutoPhotoUploader.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to photos.getById?photos={0}.
+        /// </summary>
+        public static string GetPhotoByIdUrl {
+            get {
+                return ResourceManager.GetString("GetPhotoByIdUrl", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to photos.getUploadServer?album_id={0}&amp;group_id={1}.
         /// </summary>
         public static string GetUploadServerUrl {
@@ -120,6 +129,15 @@ namespace VkAutoPhotoUploader.Properties {
         public static string PhotoDescription {
             get {
                 return ResourceManager.GetString("PhotoDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to -{0}_{1}.
+        /// </summary>
+        public static string PhotoIdFormat {
+            get {
+                return ResourceManager.GetString("PhotoIdFormat", resourceCulture);
             }
         }
         

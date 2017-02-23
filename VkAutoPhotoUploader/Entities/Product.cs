@@ -30,8 +30,8 @@ namespace VkAutoPhotoUploader.Entities
                 return false;
             try
             {
-                var photoParam = String.Format("-{0}_{1}", SettingRepository.GetSettings().GroupId, PhotoId.Split('_')[1]);
-                var result = WebProcessor.VkReguest<PhotoGetByIdResult>(String.Format("photos.getById?photos={0}", photoParam));
+                var photoParam = String.Format(Properties.Resources.PhotoIdFormat, SettingRepository.GetSettings().GroupId, PhotoId.Split('_')[1]);
+                var result = WebProcessor.VkReguest<PhotoGetByIdResult>(String.Format(Properties.Resources.GetPhotoByIdUrl, photoParam));
                 if (result != null && result.response.Any())
                     isContains = true;
             }
