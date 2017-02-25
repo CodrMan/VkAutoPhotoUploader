@@ -79,6 +79,15 @@ namespace VkAutoPhotoUploader.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to photos.delete?owner_id=-{0}&amp;photo_id={1}.
+        /// </summary>
+        public static string DeletePhotoUrl {
+            get {
+                return ResourceManager.GetString("DeletePhotoUrl", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to photos.getById?photos={0}.
         /// </summary>
         public static string GetPhotoByIdUrl {

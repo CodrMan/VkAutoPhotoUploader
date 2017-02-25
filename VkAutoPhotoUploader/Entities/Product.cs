@@ -42,5 +42,22 @@ namespace VkAutoPhotoUploader.Entities
             
             return isContains;
         }
+
+        public bool RemoveFromGroup()
+        {
+            var result = false;
+
+            try
+            {
+                var isDeletePhoto = WebProcessor.VkReguest<DeletePhotoResult>(String.Format(Properties.Resources.DeletePhotoUrl, SettingRepository.GetSettings().GroupId, PhotoId.Split('_')[1]));
+                result = isDeletePhoto?.response == 1;
+            }
+            catch (Exception)
+            {
+                result = false;
+            }
+            
+            return result;
+        }
     }
 }

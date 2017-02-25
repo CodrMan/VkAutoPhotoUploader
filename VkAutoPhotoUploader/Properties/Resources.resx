@@ -123,6 +123,9 @@
   <data name="CreateAlbumUrl" xml:space="preserve">
     <value>photos.createAlbum?title={0}&amp;group_id={1}&amp;upload_by_admins_only=1</value>
   </data>
+  <data name="DeletePhotoUrl" xml:space="preserve">
+    <value>photos.delete?owner_id=-{0}&amp;photo_id={1}</value>
+  </data>
   <data name="GetPhotoByIdUrl" xml:space="preserve">
     <value>photos.getById?photos={0}</value>
   </data>
