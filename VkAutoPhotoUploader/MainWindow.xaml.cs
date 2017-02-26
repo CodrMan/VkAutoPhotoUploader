@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using System.Windows;
+
 using VkAutoPhotoUploader.Entities;
 using VkAutoPhotoUploader.Models;
 using VkAutoPhotoUploader.Properties;
@@ -53,21 +53,7 @@ namespace VkAutoPhotoUploader
                 {
                     try
                     {
-                        var caption = String.Format(Properties.Resources.PhotoDescription, item.Name, item.Price, item.ProductLink);
-                        var uploadServerHttpParams = String.Format(Properties.Resources.GetUploadServerUrl, albumId, _groupId);
-                        var uploadServerModel = WebProcessor.VkReguest<UploadServerResult>(uploadServerHttpParams);
-                        var uploadPhotoModel = WebProcessor.SendPhotos(uploadServerModel.response.upload_url, item.PhotoBytes);
-                        var savePhotoHttpParams = String.Format(Properties.Resources.SavePhotoUrl, albumId, _groupId, uploadPhotoModel.server, uploadPhotoModel.photos_list, uploadPhotoModel.hash, caption);
-                        var saveResult = WebProcessor.VkReguest<SavePhotoResult>(savePhotoHttpParams);
-
-                        if (saveResult.response[0].id.Contains("photo"))
-                        {
-                            item.IsSync = true;
-                            item.AlbumId = albumId;
-                            item.PhotoId = saveResult.response[0].id;
-                        }
-
-                        Thread.Sleep(1000);
+                        item.SavePhoto(albumId);
                     }
                     catch (Exception)
                     {

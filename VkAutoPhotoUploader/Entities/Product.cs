@@ -18,9 +18,21 @@ namespace VkAutoPhotoUploader.Entities
         public bool IsSync { get; set; }
         public byte[] PhotoBytes { get; set; }
 
-        public void SavePhoto()
+        public void SavePhoto(int albumId) //TODO check contains photo in group
         {
-            
+            var caption = String.Format(Properties.Resources.PhotoDescription, Name, Price, ProductLink);
+            var uploadServerHttpParams = String.Format(Properties.Resources.GetUploadServerUrl, albumId, SettingRepository.GetSettings().GroupId);
+            var uploadServerModel = WebProcessor.VkReguest<UploadServerResult>(uploadServerHttpParams);
+            var uploadPhotoModel = WebProcessor.SendPhotos(uploadServerModel.response.upload_url, PhotoBytes);
+            var savePhotoHttpParams = String.Format(Properties.Resources.SavePhotoUrl, albumId, SettingRepository.GetSettings().GroupId, uploadPhotoModel.server, uploadPhotoModel.photos_list, uploadPhotoModel.hash, caption);
+            var saveResult = WebProcessor.VkReguest<SavePhotoResult>(savePhotoHttpParams);
+
+            if (saveResult.response[0].id.Contains("photo"))
+            {
+                IsSync = true;
+                AlbumId = albumId;
+                PhotoId = saveResult.response[0].id;
+            }
         }
 
         public bool IsContainsInGroup()
